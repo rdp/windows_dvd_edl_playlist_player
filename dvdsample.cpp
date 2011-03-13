@@ -40,6 +40,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      PSTR      pCmdLine,
                      int       nCmdShow) 
 {    
+	printf("in main\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     DbgInitialise(hInstance);
     g_App.SetAppValues(hInstance, APPNAME, IDS_APP_TITLE) ;
 

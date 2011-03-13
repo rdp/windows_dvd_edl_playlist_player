@@ -21,6 +21,7 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
         {
             case EC_DVD_CURRENT_HMSF_TIME:
             {
+				printf("ts");
                 DVD_HMSF_TIMECODE * pTC = reinterpret_cast<DVD_HMSF_TIMECODE *>(&lParam1);
                 m_CurTime = *pTC;
                 m_pCallback->UpdateStatus(); // inform our client that something changed
@@ -39,6 +40,10 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
                 hr = m_pIDvdC2->PlayTitle(1, DVD_CMD_FLAG_None, NULL);
                 ASSERT(SUCCEEDED(hr));
                 break;
+		
+			case EC_DVD_PLAYPERIOD_AUTOSTOP:
+				printf("Output sentence");
+				break;
 
             case EC_DVD_DOMAIN_CHANGE:
                 switch (lParam1)
