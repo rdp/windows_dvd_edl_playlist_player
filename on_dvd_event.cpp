@@ -1,5 +1,30 @@
 #include "DvdCore.h"
 
+#include <stdio.h>
+
+void XTrace0(LPCTSTR lpszText)
+{
+   ::OutputDebugString(lpszText);
+}
+
+void XTrace(LPCTSTR lpszFormat, ...)
+{
+    va_list args;
+    va_start(args, lpszFormat);
+    int nBuf;
+    TCHAR szBuffer[512]; // get rid of this hard-coded buffer
+    nBuf = _vsntprintf(szBuffer, 511, lpszFormat, args);
+    ::OutputDebugString(szBuffer);
+    va_end(args);
+}
+
+#ifdef _DEBUG
+#define XTRACE XTrace
+#else
+#define XTRACE
+#endif
+
+// OutputDebugString
 //------------------------------------------------------------------------------
 // Name: CDvdCore::OnDvdEvent()
 // Desc: This method receives DVD messages from our WndProc and acts on them
@@ -11,6 +36,20 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
     long lEvent;
 	LONG_PTR lParam1, lParam2;
     long lTimeOut = 0;
+//				OutputDebugString(L"Event!\n");
+
+					DVD_HMSF_TIMECODE start;
+					start.bHours = 0;
+					start.bMinutes = 10;
+					start.bSeconds = 0;
+					start.bFrames = 20;
+					DVD_HMSF_TIMECODE end;
+					end.bHours = 0;
+					end.bMinutes = 10;
+					end.bSeconds = 05;
+					end.bFrames = 20;
+
+
 
     while (SUCCEEDED(m_pIME->GetEvent(&lEvent, &lParam1, &lParam2, lTimeOut)))
     {
@@ -21,7 +60,8 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
         {
             case EC_DVD_CURRENT_HMSF_TIME:
             {
-				printf("ts");
+				// we get these like once a second...
+				//OutputDebugString(L"ts event");
                 DVD_HMSF_TIMECODE * pTC = reinterpret_cast<DVD_HMSF_TIMECODE *>(&lParam1);
                 m_CurTime = *pTC;
                 m_pCallback->UpdateStatus(); // inform our client that something changed
@@ -34,6 +74,12 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
 
             case EC_DVD_TITLE_CHANGE:
                 m_ulCurTitle = static_cast<ULONG>(lParam1);
+				XTRACE(L"ts event %d", m_ulCurTitle);
+				if(m_ulCurTitle == 1) {
+
+					m_pIDvdC2->PlayPeriodInTitleAutoStop(1, &start, &end, DVD_CMD_FLAG_None, NULL);
+					XTRACE(L"Commanded it to change...\n");
+				}
                 break;
 
             case EC_DVD_NO_FP_PGC:
@@ -42,7 +88,15 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
                 break;
 		
 			case EC_DVD_PLAYPERIOD_AUTOSTOP:
-				printf("Output sentence");
+			    playbackCount++;
+				XTRACE(L"The good one! %d\n", playbackCount);
+				m_eState = Nav_Paused;
+				// probably wants something like "seek to that end now and run " [like it has totally lost current location...it does not pause at the end...it sets itself to something else...]
+
+				if( (playbackCount % 2) == 0 || playbackCount > 2) {
+					// restart...
+					// m_pIDvdC2->PlayPeriodInTitleAutoStop(1, &start, &end, DVD_CMD_FLAG_None, NULL);
+				}
 				break;
 
             case EC_DVD_DOMAIN_CHANGE:

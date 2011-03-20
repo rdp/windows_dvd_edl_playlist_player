@@ -202,6 +202,7 @@ private:
     GRAPH_STATE m_eState;           // the state of our current graph
 	bool m_bMessageSink;			// did we set up the message sink?
     bool m_bUseVMR9;                // flag to indicate the usage of VMR9 in the DVD graph
+	int playbackCount;
 };  //  class CDvdCore
 
 //------------------------------------------------------------------------------

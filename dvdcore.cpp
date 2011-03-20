@@ -73,7 +73,8 @@ CDvdCore::CDvdCore(HINSTANCE hInstance, IDvdCallback * pIDC) :
                        m_ulCurTitle(0),
                        m_ulCurChapter(0),
                        m_bMessageSink(false),
-                       m_bUseVMR9(false)
+                       m_bUseVMR9(false),
+					   playbackCount(false)
 {
     DbgLog((LOG_TRACE, 5, TEXT("CDvdCore::CDvdCore()"))) ;
 
