@@ -1,4 +1,8 @@
 NB:
+
 Project must be re-located to be exactly in this subdirectory, to build:
-your equivalent of:
+(your equivalent of:)
+
 D:\Program Files\Microsoft SDKs\Windows\v7.1\Samples\multimedia\directshow\dvd
+
+(you have to download and install the microsoft SDK first, of course).
