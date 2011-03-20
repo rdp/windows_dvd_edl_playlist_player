@@ -15,8 +15,8 @@
 #include "Dialogs.h"
 #include "DvdSample.h"
 #include <strsafe.h>
-#include <iostream>
 
+#define ENABLE_DEBUG_LOGGING
 //------------------------------------------------------------------------------
 // Global data
 //------------------------------------------------------------------------------
@@ -41,13 +41,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      PSTR      pCmdLine,
                      int       nCmdShow) 
 {    
-	AllocConsole();
-	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-SetStdHandle(STD_OUTPUT_HANDLE, hStdOut);
-std::cout << "Hello World" << std::endl;
-OutputDebugString("yo\n\n\n\n\n"W);
-	printf("in main\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    DbgInitialise(hInstance);
+    OutputDebugString(L"yo\n\n\n\n\n");
+	DbgInitialise(hInstance);
     g_App.SetAppValues(hInstance, APPNAME, IDS_APP_TITLE) ;
 
     // Perform application initialization:
