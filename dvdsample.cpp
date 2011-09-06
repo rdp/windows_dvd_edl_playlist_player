@@ -366,7 +366,7 @@ LRESULT CApp::ToolTipProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 TText->lpszText = TEXT("Full Screen\0");
                 break;
             case ID_PLAYBACK_STEPFORWARD:
-                TText->lpszText = TEXT("Step Forward\0");
+                TText->lpszText = TEXT("Step Forward One Frame\0");
                 break;
         }
 
@@ -688,8 +688,8 @@ void CApp::DrawStatus(HDC hDC)
     TextOut(hDC, 10, 50, location, lstrlen(location));
 
     TCHAR time[25];
-    hr = StringCchPrintf(time, NUMELMS(time), TEXT("Time: %02d:%02d:%02d\0"), m_pDvdCore->GetTime().bHours, 
-        m_pDvdCore->GetTime().bMinutes, m_pDvdCore->GetTime().bSeconds);
+    hr = StringCchPrintf(time, NUMELMS(time), TEXT("Time: %02d:%02d:%02d %d\0"), m_pDvdCore->GetTime().bHours, 
+        m_pDvdCore->GetTime().bMinutes, m_pDvdCore->GetTime().bSeconds, m_pDvdCore->GetTime().bFrames);
     TextOut(hDC, 10, 65, time, lstrlen(time));
 
     if(timeGetTime() <= (m_dwProhibitedTime + 5000)) // if less than 5 seconds has passed

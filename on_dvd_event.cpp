@@ -60,7 +60,7 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
         {
             case EC_DVD_CURRENT_HMSF_TIME:
             {
-				// we get these like once a second...
+				//  "This event is triggered at the beginning of every VOBU, which occurs every 0.4 to 1.0 seconds."
 				//OutputDebugString(L"ts event");
                 DVD_HMSF_TIMECODE * pTC = reinterpret_cast<DVD_HMSF_TIMECODE *>(&lParam1);
                 m_CurTime = *pTC;
@@ -74,11 +74,11 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
 
             case EC_DVD_TITLE_CHANGE:
                 m_ulCurTitle = static_cast<ULONG>(lParam1);
-				XTRACE(L"ts event %d", m_ulCurTitle);
+				XTRACE(L"title change event %d", m_ulCurTitle);
 				if(m_ulCurTitle == 1) {
 
-					m_pIDvdC2->PlayPeriodInTitleAutoStop(1, &start, &end, DVD_CMD_FLAG_None, NULL);
-					XTRACE(L"Commanded it to change...\n");
+					//m_pIDvdC2->PlayPeriodInTitleAutoStop(1, &start, &end, DVD_CMD_FLAG_None, NULL);
+					XTRACE(L"NOT Commanded it to change though we are within title 1...\n");
 				}
                 break;
 
@@ -89,7 +89,7 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
 		
 			case EC_DVD_PLAYPERIOD_AUTOSTOP:
 			    playbackCount++;
-				XTRACE(L"The good one! %d\n", playbackCount);
+				XTRACE(L"Got good autostop message! %d\n", playbackCount);
 				m_eState = Nav_Paused;
 				// probably wants something like "seek to that end now and run " [like it has totally lost current location...it does not pause at the end...it sets itself to something else...]
 
