@@ -673,32 +673,6 @@ void CApp::UpdateStatus(void)
 }
 
 
-//------------------------------------------------------------------------------
-// Name: CApp::DrawStatus()
-// Desc: This method draws our status test (time, title, chapter) on the screen
-//------------------------------------------------------------------------------
-
-void CApp::DrawStatus(HDC hDC) 
-{
-    DbgLog((LOG_TRACE, 5, TEXT("CApp::DrawStatus()"))) ;
-
-    TCHAR location[35];
-    HRESULT hr = StringCchPrintf(location, NUMELMS(location), TEXT("Title: %-6uChapter: %u\0"), m_pDvdCore->GetTitle(), 
-        m_pDvdCore->GetChapter());
-    TextOut(hDC, 10, 50, location, lstrlen(location));
-
-    TCHAR time[25];
-    hr = StringCchPrintf(time, NUMELMS(time), TEXT("Time: %02d:%02d:%02d %d\0"), m_pDvdCore->GetTime().bHours, 
-        m_pDvdCore->GetTime().bMinutes, m_pDvdCore->GetTime().bSeconds, m_pDvdCore->GetTime().bFrames);
-    TextOut(hDC, 10, 65, time, lstrlen(time));
-
-    if(timeGetTime() <= (m_dwProhibitedTime + 5000)) // if less than 5 seconds has passed
-    {
-        SetTextColor(hDC, RGB(255, 0, 0));
-        TextOut(hDC, 180, 80, TEXT("Prohibited!"), 11);
-    }
-}
-
 
 //------------------------------------------------------------------------------
 // Name: CApp::OnSelectDisc()
