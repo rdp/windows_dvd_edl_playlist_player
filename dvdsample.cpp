@@ -548,7 +548,7 @@ LRESULT CApp::MenuProc(HWND hWnd, WPARAM wParam, LPARAM lParam)
             break;
 
         case ID_OPTIONS_GETVIDEOATTRIBUTES:
-            m_pDvdCore->GetVideoAttributes();
+			m_pDvdCore->ShowVideoAttributesPopUp();
             break;
 
         case ID_OPTIONS_GETSUBPICTUREATTRIBUTES:

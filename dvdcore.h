@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // File: DvdCore.h
 //
-// Desc: Declarations for DVD Playback capabilities
+// THIS IS MY OWN FILE
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ class CDvdCore : public IDvdCallback
 
 public:
 	bool GetSPAttributes( void );
-	bool GetVideoAttributes( void );
+	bool ShowVideoAttributesPopUp( void );
 	bool GetAudioAttributes( void );
 	bool GetDvdText( void );
 	bool PlayTime(DVD_HMSF_TIMECODE time);
@@ -146,6 +146,7 @@ public:
     inline DVD_HMSF_TIMECODE & GetTime(void) { return m_CurTime; }
     inline ULONG GetTitle(void) { return m_ulCurTitle; }
     inline ULONG GetChapter(void) { return m_ulCurChapter; }
+	IDvdInfo2 * m_pIDvdI2;          // IDvdInfo2 interface
 
 private:
 	LRESULT OnClose( void );
@@ -195,7 +196,6 @@ private:
 	IMediaEventEx * m_pIME;         // IMediaEventEx interface
 	IMediaControl * m_pIMC;         // IMediaControl interface
 	IDvdControl2 * m_pIDvdC2;       // IDvdControl2 interface
-	IDvdInfo2 * m_pIDvdI2;          // IDvdInfo2 interface
 	IDvdGraphBuilder * m_pIDvdGB;   // IDvdGraphBuilder interface
 	DWORD m_dwRenderFlags;          // the flags used to render the graph.  May be used to set different flags.
 	TCHAR m_szDiscPath[MAX_PATH];   // may be used to set the initial disc path

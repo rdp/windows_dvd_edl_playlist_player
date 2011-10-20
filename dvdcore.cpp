@@ -2262,7 +2262,7 @@ bool CDvdCore::GetAudioAttributes()
 //       a string to CApp rather than displaying it itself.
 //------------------------------------------------------------------------------
 
-bool CDvdCore::GetVideoAttributes()
+bool CDvdCore::ShowVideoAttributesPopUp()
 {
     DVD_VideoAttributes atrVideo;
     HRESULT hr;

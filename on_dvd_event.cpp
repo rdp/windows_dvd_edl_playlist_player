@@ -54,15 +54,15 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
 
     while (SUCCEEDED(m_pIME->GetEvent(&lEvent, &lParam1, &lParam2, lTimeOut)))
     {
-        DbgLog((LOG_TRACE, 5, TEXT("Event: %#x"), lEvent)) ;
-
+        DbgLog((LOG_TRACE, 5, TEXT("Got Event: %#x"), lEvent)) ;
+		m_pCallback->UpdateStatus();
         HRESULT hr;
         switch(lEvent)
         {
             case EC_DVD_CURRENT_HMSF_TIME:
             {
 				//  "This event is triggered at the beginning of every VOBU, which occurs every 0.4 to 1.0 seconds."
-				//OutputDebugString(L"ts event");
+				OutputDebugString(L"pts event..");
                 DVD_HMSF_TIMECODE * pTC = reinterpret_cast<DVD_HMSF_TIMECODE *>(&lParam1);
                 m_CurTime = *pTC;
                 m_pCallback->UpdateStatus(); // inform our client that something changed
@@ -75,12 +75,12 @@ LRESULT CDvdCore::OnDvdEvent(UINT uMessage, WPARAM wParam, LPARAM lParam)
 
             case EC_DVD_TITLE_CHANGE:
                 m_ulCurTitle = static_cast<ULONG>(lParam1);
-				XTRACE(L"title change event %d", m_ulCurTitle);
+				XTRACE(L"title change event to %d ", m_ulCurTitle);
 				if(m_ulCurTitle == 1) {
 
 					//m_pIDvdC2->PlayPeriodInTitleAutoStop(1, &start, &end, DVD_CMD_FLAG_None, NULL);
-					XTRACE(L"NOT Commanded it to change though we are within title 1...\n");
 				}
+				XTRACE(L"NOT Commanded it to change though we are within title 1...\n");
                 break;
 
             case EC_DVD_NO_FP_PGC:
@@ -298,12 +298,27 @@ void CApp::DrawStatus(HDC hDC)
         m_pDvdCore->GetChapter());
     TextOut(hDC, 10, 50, location, lstrlen(location));
 
-    TCHAR time[25];
-    hr = StringCchPrintf(time, NUMELMS(time), TEXT("Time: %02d:%02d:%02d %d\0"), m_pDvdCore->GetTime().bHours, 
-        m_pDvdCore->GetTime().bMinutes, m_pDvdCore->GetTime().bSeconds, m_pDvdCore->GetTime().bFrames);
+    TCHAR time[250];
+
+	float time_per_fps = 1.0/23.97; // a good guess! see http://betterlogic.com/roger/2011/10/idvdinfo2-fps-framerate
+
+	float current_seconds = m_pDvdCore->GetTime().bHours*3600+m_pDvdCore->GetTime().bMinutes*60+m_pDvdCore->GetTime().bSeconds+(time_per_fps*m_pDvdCore->GetTime().bFrames);
+
+	// bring it "up" to its more arguably accurate time elapsed (mplayer) time
+	float correct_seconds = current_seconds * 30/29.97;
+	int hours = correct_seconds/3600;
+	int minutes = correct_seconds/3600/60;
+	float corrected_just_seconds = correct_seconds - (hours*3600) - (minutes*60);
+
+    hr = StringCchPrintf(time, NUMELMS(time), TEXT("29.97 fps time: %02d:%02d:%4.02f\0"), hours, 
+        minutes, corrected_just_seconds);
     TextOut(hDC, 10, 65, time, lstrlen(time));
 
-    if(timeGetTime() <= (m_dwProhibitedTime + 5000)) // if less than 5 seconds has passed
+	hr = StringCchPrintf(time, NUMELMS(time), TEXT("30 fps Time: %02d:%02d:%02d f%d\0"), m_pDvdCore->GetTime().bHours,
+    m_pDvdCore->GetTime().bMinutes, m_pDvdCore->GetTime().bSeconds, m_pDvdCore->GetTime().bFrames);
+    TextOut(hDC, 10, 80, time, lstrlen(time));
+
+    if(timeGetTime() <= (m_dwProhibitedTime + 5000)) // if less than 5 seconds has passed [huh?]
     {
         SetTextColor(hDC, RGB(255, 0, 0));
         TextOut(hDC, 180, 80, TEXT("Prohibited!"), 11);
