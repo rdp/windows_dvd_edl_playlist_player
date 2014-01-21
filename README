@@ -6,3 +6,10 @@ Project must be re-located to be exactly in this subdirectory, to build:
 D:\Program Files\Microsoft SDKs\Windows\v7.1\Samples\multimedia\directshow\dvd 
 
 (you have to download and install the microsoft SDK first, of course).
+
+Basically this project is a "working live demo" of using the "dvd navigator"
+IDvdGraphBuilder  and idvdcontrol etc. and friends to demonstrate using them, in windows, to control a DVD playback graph so that 
+playback is "edited" like an EDL
+https://en.wikipedia.org/wiki/Edit_decision_list
+
+http://msdn.microsoft.com/en-us/library/windows/desktop/dd388609(v=vs.85).aspx
